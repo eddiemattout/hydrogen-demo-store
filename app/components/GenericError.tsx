@@ -10,9 +10,13 @@ export function GenericError({
   const heading = `Something’s wrong here.`;
   let description = `We found an error while loading this page.`;
 
-  // TODO hide error in prod?
-  if (error) {
+  // Only show error details in development
+  if (error && process.env.NODE_ENV === 'development') {
     description += `\n${error.message}`;
+    // eslint-disable-next-line no-console
+    console.error(error);
+  } else if (error) {
+    // Keep server logging in all environments
     // eslint-disable-next-line no-console
     console.error(error);
   }
@@ -23,7 +27,7 @@ export function GenericError({
         <Text width="narrow" as="p">
           {description}
         </Text>
-        {error?.stack && (
+        {error?.stack && process.env.NODE_ENV === 'development' && (
           <pre
             style={{
               padding: '2rem',
