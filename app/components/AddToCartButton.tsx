@@ -10,6 +10,7 @@ export function AddToCartButton({
   variant = 'primary',
   width = 'full',
   disabled,
+  analytics,
   ...props
 }: {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ export function AddToCartButton({
   variant?: 'primary' | 'secondary' | 'inline';
   width?: 'auto' | 'full';
   disabled?: boolean;
+  analytics?: Record<string, unknown>;
   [key: string]: any;
 }) {
   return (
@@ -29,6 +31,9 @@ export function AddToCartButton({
       action={CartForm.ACTIONS.LinesAdd}
     >
       {(fetcher: FetcherWithComponents<any>) => {
+        const isAdding = fetcher.state !== 'idle';
+        const isDisabled = disabled ?? isAdding;
+
         return (
           <>
             <Button
@@ -37,7 +42,10 @@ export function AddToCartButton({
               width={width}
               variant={variant}
               className={className}
-              disabled={disabled ?? fetcher.state !== 'idle'}
+              disabled={isDisabled}
+              aria-busy={isAdding}
+              aria-disabled={isDisabled}
+              aria-label={isAdding ? 'Adding to cart...' : undefined}
               {...props}
             >
               {children}

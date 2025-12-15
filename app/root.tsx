@@ -28,6 +28,7 @@ import invariant from 'tiny-invariant';
 import {PageLayout} from '~/components/PageLayout';
 import {GenericError} from '~/components/GenericError';
 import {NotFound} from '~/components/NotFound';
+import {CookieConsent} from '~/components/CookieConsent';
 import favicon from '~/assets/favicon.svg';
 import {seoPayload} from '~/lib/seo.server';
 import styles from '~/styles/app.css?url';
@@ -167,6 +168,7 @@ function Layout({children}: {children?: React.ReactNode}) {
             >
               {children}
             </PageLayout>
+            <CookieConsent />
           </Analytics.Provider>
         ) : (
           children

@@ -421,6 +421,34 @@ function policy({
   };
 }
 
+function customPage({
+  title,
+  description,
+  url,
+}: {
+  title: string;
+  description: string;
+  url: Request['url'];
+}): SeoConfig {
+  return {
+    title,
+    description: truncate(description),
+    titleTemplate: '%s | Hydrogen Demo Store',
+    url,
+    robots: {
+      noIndex: false,
+      noFollow: false,
+    },
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: title,
+      description: truncate(description),
+      url,
+    },
+  };
+}
+
 function policies({
   policies,
   url,
@@ -464,6 +492,7 @@ export const seoPayload = {
   article,
   blog,
   collection,
+  customPage,
   home,
   listCollections,
   page,
