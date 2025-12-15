@@ -10,6 +10,7 @@ import {getSeoMeta} from '@shopify/hydrogen';
 import {Hero} from '~/components/Hero';
 import {FeaturedCollections} from '~/components/FeaturedCollections';
 import {ProductSwimlane} from '~/components/ProductSwimlane';
+import {RecentlyViewedProducts} from '~/components/RecentlyViewedProducts';
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {getHeroPlaceholder} from '~/lib/placeholders';
 import {seoPayload} from '~/lib/seo.server';
@@ -181,6 +182,8 @@ export default function Homepage() {
           </Await>
         </Suspense>
       )}
+
+      <RecentlyViewedProducts />
 
       {secondaryHero && (
         <Suspense fallback={<Hero {...skeletons[1]} />}>

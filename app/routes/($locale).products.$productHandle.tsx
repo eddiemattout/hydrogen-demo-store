@@ -1,4 +1,4 @@
-import {useRef, Suspense} from 'react';
+import {useRef, Suspense, useEffect} from 'react';
 import {Disclosure, Listbox} from '@headlessui/react';
 import {
   defer,
@@ -39,6 +39,7 @@ import {seoPayload} from '~/lib/seo.server';
 import type {Storefront} from '~/lib/type';
 import {routeHeaders} from '~/data/cache';
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
+import {useRecentlyViewed} from '~/hooks/useRecentlyViewed';
 
 export const headers = routeHeaders;
 
@@ -142,6 +143,14 @@ export default function Product() {
     ...product,
     selectedOrFirstAvailableVariant: selectedVariant,
   });
+
+  // Track recently viewed products
+  const {addProduct} = useRecentlyViewed();
+  useEffect(() => {
+    if (product.handle) {
+      addProduct(product.handle);
+    }
+  }, [product.handle, addProduct]);
 
   return (
     <>
