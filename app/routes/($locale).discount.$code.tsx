@@ -1,5 +1,7 @@
 import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
+import {isLocalPath} from '~/lib/utils';
+
 /**
  * Automatically applies a discount found on the url
  * If a cart exists it's updated with the discount, otherwise a cart is created with the discount already applied
@@ -23,8 +25,8 @@ export async function loader({request, context, params}: LoaderFunctionArgs) {
   let redirectParam =
     searchParams.get('redirect') || searchParams.get('return_to') || '/';
 
-  if (redirectParam.includes('//')) {
-    // Avoid redirecting to external URLs to prevent phishing attacks
+  // Use isLocalPath to properly validate redirect URLs and prevent open redirect attacks
+  if (!isLocalPath(redirectParam)) {
     redirectParam = '/';
   }
 
