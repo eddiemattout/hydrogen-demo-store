@@ -42,20 +42,35 @@ export function PageLayout({children, layout}: LayoutProps) {
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        <div className="">
-          <a href="#mainContent" className="sr-only">
-            Skip to content
-          </a>
-        </div>
+        <SkipLinks />
         {headerMenu && layout?.shop.name && (
           <Header title={layout.shop.name} menu={headerMenu} />
         )}
-        <main role="main" id="mainContent" className="flex-grow">
+        <main role="main" id="mainContent" className="flex-grow" tabIndex={-1}>
           {children}
         </main>
       </div>
       {footerMenu && <Footer menu={footerMenu} />}
     </>
+  );
+}
+
+function SkipLinks() {
+  return (
+    <div className="skip-links">
+      <a
+        href="#mainContent"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-4 focus:left-4 focus:bg-primary focus:text-contrast focus:px-4 focus:py-2 focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+      >
+        Skip to main content
+      </a>
+      <a
+        href="#footer-nav"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-4 focus:left-48 focus:bg-primary focus:text-contrast focus:px-4 focus:py-2 focus:rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+      >
+        Skip to footer
+      </a>
+    </div>
   );
 }
 
@@ -420,11 +435,14 @@ function Footer({menu}: {menu?: EnhancedMenu}) {
       divider={isHome ? 'none' : 'top'}
       as="footer"
       role="contentinfo"
+      id="footer-nav"
+      tabIndex={-1}
       className={`grid min-h-[25rem] items-start grid-flow-row w-full gap-6 py-8 px-6 md:px-8 lg:px-12 md:gap-8 lg:gap-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-${itemsCount}
         bg-primary dark:bg-contrast dark:text-primary text-contrast overflow-hidden`}
     >
       <FooterMenu menu={menu} />
       <CountrySelector />
+      <AccessibilityComplianceSection />
       <div
         className={`self-end pt-8 opacity-50 md:col-span-2 lg:col-span-${itemsCount}`}
       >
@@ -432,6 +450,73 @@ function Footer({menu}: {menu?: EnhancedMenu}) {
         Licensed Open Source project.
       </div>
     </Section>
+  );
+}
+
+function AccessibilityComplianceSection() {
+  return (
+    <section
+      className="grid gap-4"
+      aria-labelledby="accessibility-compliance-heading"
+    >
+      <Heading
+        className="flex justify-between"
+        size="lead"
+        as="h3"
+        id="accessibility-compliance-heading"
+      >
+        Accessibility & Compliance
+      </Heading>
+      <nav
+        className="grid gap-2 pb-6"
+        aria-label="Accessibility and compliance links"
+      >
+        <Link
+          to="/accessibility"
+          className="hover:underline focus:outline-none focus:ring-2 focus:ring-contrast/50 rounded"
+          prefetch="intent"
+        >
+          Accessibility Statement
+        </Link>
+        <Link
+          to="/policies/privacy-policy"
+          className="hover:underline focus:outline-none focus:ring-2 focus:ring-contrast/50 rounded"
+          prefetch="intent"
+        >
+          Privacy Policy
+        </Link>
+        <Link
+          to="/account/privacy"
+          className="hover:underline focus:outline-none focus:ring-2 focus:ring-contrast/50 rounded"
+          prefetch="intent"
+        >
+          Your Data Rights (GDPR)
+        </Link>
+      </nav>
+      <div
+        className="flex flex-wrap gap-2 items-center"
+        aria-label="Compliance badges"
+      >
+        <span
+          className="inline-flex items-center px-2 py-1 text-xs font-medium bg-contrast/10 rounded"
+          title="Web Content Accessibility Guidelines 2.1 Level AA"
+        >
+          WCAG 2.1 AA
+        </span>
+        <span
+          className="inline-flex items-center px-2 py-1 text-xs font-medium bg-contrast/10 rounded"
+          title="General Data Protection Regulation Compliant"
+        >
+          GDPR
+        </span>
+        <span
+          className="inline-flex items-center px-2 py-1 text-xs font-medium bg-contrast/10 rounded"
+          title="European Accessibility Act Compliant"
+        >
+          EAA
+        </span>
+      </div>
+    </section>
   );
 }
 
