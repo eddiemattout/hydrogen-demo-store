@@ -1,4 +1,4 @@
-import {useRef, Suspense} from 'react';
+import {useRef, Suspense, useEffect} from 'react';
 import {Disclosure, Listbox} from '@headlessui/react';
 import {
   defer,
@@ -39,6 +39,8 @@ import {seoPayload} from '~/lib/seo.server';
 import type {Storefront} from '~/lib/type';
 import {routeHeaders} from '~/data/cache';
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
+import {RecentlyViewed} from '~/components/RecentlyViewed';
+import {useRecentlyViewed} from '~/hooks/useRecentlyViewed';
 
 export const headers = routeHeaders;
 
@@ -143,6 +145,58 @@ export default function Product() {
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
+  // Track recently viewed products
+  const {addProduct} = useRecentlyViewed();
+  const lastTrackedProductId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (
+      product &&
+      selectedVariant &&
+      lastTrackedProductId.current !== product.id
+    ) {
+      lastTrackedProductId.current = product.id;
+      addProduct({
+        id: product.id,
+        title: product.title,
+        handle: product.handle,
+        vendor: product.vendor,
+        publishedAt: product.publishedAt,
+        variants: {
+          nodes: [
+            {
+              id: selectedVariant.id || '',
+              availableForSale: selectedVariant.availableForSale || false,
+              image: selectedVariant.image
+                ? {
+                    url: selectedVariant.image.url,
+                    altText: selectedVariant.image.altText,
+                    width: selectedVariant.image.width,
+                    height: selectedVariant.image.height,
+                  }
+                : null,
+              price: {
+                amount: selectedVariant.price?.amount || '0',
+                currencyCode: selectedVariant.price?.currencyCode || 'USD',
+              },
+              compareAtPrice: selectedVariant.compareAtPrice
+                ? {
+                    amount: selectedVariant.compareAtPrice.amount,
+                    currencyCode: selectedVariant.compareAtPrice.currencyCode,
+                  }
+                : null,
+              selectedOptions: selectedVariant.selectedOptions || [],
+              product: {
+                handle: product.handle,
+                title: product.title,
+              },
+            },
+          ],
+        },
+      });
+    }
+  }, [product, selectedVariant, addProduct]);
+
   return (
     <>
       <Section className="px-0 md:px-8 lg:px-12">
@@ -202,6 +256,7 @@ export default function Product() {
           )}
         </Await>
       </Suspense>
+      <RecentlyViewed currentProductId={product.id} />
       <Analytics.ProductView
         data={{
           products: [
