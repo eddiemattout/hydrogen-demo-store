@@ -7,6 +7,18 @@ module.exports = {
     'plugin:hydrogen/recommended',
     'plugin:hydrogen/typescript',
   ],
+  overrides: [
+    {
+      files: ['**/*.test.{ts,tsx}'],
+      plugins: ['vitest'],
+      rules: {
+        'vitest/expect-expect': 'warn',
+        'vitest/no-identical-title': 'error',
+        'vitest/no-focused-tests': 'error',
+        'vitest/no-disabled-tests': 'warn',
+      },
+    },
+  ],
   rules: {
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/naming-convention': 'off',
@@ -14,7 +26,6 @@ module.exports = {
     'no-useless-escape': 'off',
     '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
     'no-case-declarations': 'off',
-    // TODO: Remove jest plugin from hydrogen/eslint-plugin
     'jest/no-deprecated-functions': 'off',
     'import/order': [
       'error',
