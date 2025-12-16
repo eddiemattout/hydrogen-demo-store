@@ -136,7 +136,8 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 }
 
 export const meta = ({data}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+  if (!data?.seo) return [{title: 'Error'}];
+  return getSeoMeta(data.seo as SeoConfig);
 };
 
 function Layout({children}: {children?: React.ReactNode}) {
