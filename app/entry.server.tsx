@@ -22,7 +22,7 @@ export default async function handleRequest(
       'https://shopify.com',
       'https://www.google-analytics.com',
       'https://www.googletagmanager.com',
-      ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
+      ...(process.env.NODE_ENV === 'development' ? ['http://localhost:*'] : []),
     ],
   });
 
@@ -47,6 +47,9 @@ export default async function handleRequest(
 
   responseHeaders.set('Content-Type', 'text/html');
   responseHeaders.set('Content-Security-Policy', header);
+  responseHeaders.set('X-Content-Type-Options', 'nosniff');
+  responseHeaders.set('X-Frame-Options', 'DENY');
+  responseHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   return new Response(body, {
     headers: responseHeaders,
     status: responseStatusCode,
