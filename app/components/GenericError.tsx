@@ -2,16 +2,18 @@ import {Button} from './Button';
 import {FeaturedSection} from './FeaturedSection';
 import {PageHeader, Text} from './Text';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export function GenericError({
   error,
 }: {
   error?: {message: string; stack?: string};
 }) {
-  const heading = `Something’s wrong here.`;
+  const heading = `Something's wrong here.`;
   let description = `We found an error while loading this page.`;
 
-  // TODO hide error in prod?
-  if (error) {
+  // Only show detailed error messages in development to avoid information disclosure
+  if (error && !isProduction) {
     description += `\n${error.message}`;
     // eslint-disable-next-line no-console
     console.error(error);
@@ -23,7 +25,7 @@ export function GenericError({
         <Text width="narrow" as="p">
           {description}
         </Text>
-        {error?.stack && (
+        {error?.stack && !isProduction && (
           <pre
             style={{
               padding: '2rem',
